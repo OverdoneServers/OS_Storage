@@ -10,8 +10,9 @@ local Storage = module.Data
 //        - displayModelAngle (angle): The angle of the model of the item.
         - displayIcon (string): The icon of the item. (Can not be nil)
         - maxStack (number): The maximum amount of this item that can be stacked in a single instance of this item.
-        - shape (table): The shape of the item in the inventory. This is a 2D table of "1" or "0".
-            1 means that the slot is part of the item and 0 means that it is not.
+        - shape (table): The shape of the item in the inventory. This is a 2D table of "true" and "false" OR 1 and 0.
+            NOTE: Once the item is created, all 1 or 0 values will be converted to true or false.
+            true (1) means that the slot is part of the item and false (0) means that it is not.
             The table should be filled, meaning all rows and columns should be filled with either 1 or 0. (No nils)
             The table should be filled in a way that the item is as small as possible.
             The shape should be in the item's upright position.
@@ -116,13 +117,32 @@ Item.__index = Item
 
 local errorModel = "models/error.mdl"
 local missingIcon = "icon16/error.png"
+local defaultShape = {{true}}
 
 --[[
-    ent: string or entity - The class name of the entity or the entity/weapon itself.
-    maxStack: number - The maximum amount of this item that can be stacked in a single instance of this item.
-    shape: table - The shape of the item in the inventory.
+    ent (string or entity): The class name of the entity or the entity/weapon itself.
+    maxStack (number): The maximum amount of this item that can be stacked in a single instance of this item.
+    maxX (number): The max X size of the item in the inventory.
+    maxY (number): The max Y size of the item in the inventory.
 ]]
-function Item.new(ent, maxStack, shape)
+function Item.new(ent, maxStack, sizeX, sizeY)
+    local shape = {}
+    for i = 1, sizeY do
+        shape[i] = {}
+        for j = 1, sizeX do
+            shape[i][j] = true
+        end
+    end
+
+    return Item.newShaped(ent, maxStack, shape)
+end
+
+--[[
+    ent (string or entity): The class name of the entity or the entity/weapon itself.
+    maxStack (number): The maximum amount of this item that can be stacked in a single instance of this item.
+    shape (table): The shape of the item in the inventory.
+]]
+function Item.newShaped(ent, maxStack, shape)
     if not ent then
         Error("[ OS Storage ] A new item attempted to be created without a valid entity or class name.")
         return
@@ -130,8 +150,28 @@ function Item.new(ent, maxStack, shape)
 
     local newItem = setmetatable({}, Item)
 
+    if shape then
+        local noNeedToFormat = false
+        for i, row in ipairs(shape) do
+            for j, value in ipairs(row) do
+                if (value == true or value == false) then -- If the first value is a boolean, then assume the shape is already formatted correctly.
+                    noNeedToFormat = true
+                    break
+                end
+                if (value == 0 or value == 1) then
+                    shape[i][j] = value == 1
+                end
+            end
+            if noNeedToFormat then
+                break
+            end
+        end
+    else
+        shape = defaultShape
+    end
+
+    newItem.shape = shape
     newItem.maxStack = maxStack or 1
-    newItem.shape = shape or {{1,1}}
     newItem.allowedSlotTypes = {}
 
     if (isentity(ent)) then

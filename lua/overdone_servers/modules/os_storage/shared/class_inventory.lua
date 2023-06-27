@@ -1,5 +1,5 @@
 --[[
-    VisualItem Class
+    Inventory Class
     
     Description:
         This class is used to represent an inventory. It can be used to store items and display them in a DPanel.
@@ -42,8 +42,25 @@ end
 function Inventory.newShaped(shape)
     local newInventory = setmetatable({}, Inventory)
 
-    newInventory.shape = shape
+    do
+        local noNeedToFormat = false
+        for i, row in ipairs(shape) do
+            for j, value in ipairs(row) do
+                if (value == true or value == false) then -- If the first value is a boolean, then assume the shape is already formatted correctly.
+                    noNeedToFormat = true
+                    break
+                end
+                if (value == 0 or value == 1) then
+                    shape[i][j] = value == 1
+                end
+            end
+            if noNeedToFormat then
+                break
+            end
+        end
+    end
 
+    newInventory.shape = shape
     newInventory.itemStacks = {}
     return newInventory
 end
