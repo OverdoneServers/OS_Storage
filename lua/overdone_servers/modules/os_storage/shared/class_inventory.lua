@@ -1,30 +1,55 @@
+--[[
+    VisualItem Class
+    
+    Description:
+        This class is used to represent an inventory. It can be used to store items and display them in a DPanel.
+
+    Class Contents:
+        - shape (table): The shape of the inventory. (in slots)
+        - itemStacks (table): The item stacks in the inventory.
+
+    Class Functions:
+        - new(sizeX, sizeY): Creates a new inventory with the given size.
+        - newShaped(shape): Creates a new inventory with the given shape.
+        - GetShape(): Returns the shape of the inventory.
+
+]]--
+
 local TableHelper = OverdoneServers:GetLibrary("table_helper")
 
 local Inventory = {}
 Inventory.__index = Inventory
 
 --[[
-    sizeX: number - The width of the inventory.
-    sizeY: number - The height of the inventory.
-    displayName: string - The name of the inventory.
+    sizeX (number): The width of the inventory. (in slots)
+    sizeY (number): The height of the inventory. (in slots)
 ]]
-function Inventory.new(sizeX, sizeY, displayName)
-    local newInventory = setmetatable({}, Inventory)
-    newInventory.displayName = displayName or "Inventory"
+function Inventory.new(sizeX, sizeY)
+    local shape = {}
+    for i = 1, sizeY do
+        shape[i] = {}
+        for j = 1, sizeX do
+            shape[i][j] = true
+        end
+    end
 
-    newInventory.sizeX = sizeX or 1
-    newInventory.sizeY = sizeY or 1
+    return Inventory.newShaped(shape)
+end
+
+--[[
+    shape (table): The shape of the inventory. (in slots)
+]]
+function Inventory.newShaped(shape)
+    local newInventory = setmetatable({}, Inventory)
+
+    newInventory.shape = shape
 
     newInventory.itemStacks = {}
     return newInventory
 end
 
-function Inventory:GetSize()
-    return self.size
-end
-
-function Inventory:GetDisplayName()
-    return self.displayName
+function Inventory:GetShape()
+    return self.shape
 end
 
 function Inventory:GetItemStacks()
@@ -32,7 +57,7 @@ function Inventory:GetItemStacks()
 end
 
 function Inventory:AddItemStack(itemStack)
-    if #self:GetItemStacks() < self:GetSize() then
+    if #self:GetItemStacks() < self:GetShape() then -- TODO: Recode to support shapes
         table.insert(self.itemStacks, itemStack)
         return true
     else

@@ -6,7 +6,9 @@ TempThing = TempThing or {}
 TempThing.SlotType = TempThing.SlotType or include(module.FolderPath .. "/shared/class_slot_type.lua")
 TempThing.Slot = TempThing.Slot or include(module.FolderPath .. "/shared/class_slot.lua")
 TempThing.Item = TempThing.Item or include(module.FolderPath .. "/shared/class_item.lua")
-TempThing.ItemStack = TempThing.ItemStack or include(module.FolderPath .. "/shared/class_itemstack.lua") -- TODO: Rename itemstack to item_stack
+TempThing.ItemStack = TempThing.ItemStack or include(module.FolderPath .. "/shared/class_item_stack.lua")
+TempThing.VisualItem = TempThing.VisualItem or include(module.FolderPath .. "/client/class_visual_item.lua")
+
 
 function Storage:InitInventory(sizeX, sizeY)
 
@@ -14,7 +16,7 @@ end
 
 module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", function(ply, button)
     if button == KEY_J and IsFirstTimePredicted() then
-        if (Storage:RegisterItem(TempThing.Item.new("weapon_crowbar", 1, 1, 1))) then
+        if (Storage:RegisterItem(TempThing.Item.new("weapon_crowbar", 1, {{1,1}}))) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Registered weapon_crowbar")
         else
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to register weapon_crowbar")
@@ -52,7 +54,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
             return
         end
 
-        local slot = TempThing.Slot.new(slotType, 1, 1)
+        local slot = TempThing.Slot.new(slotType, {{1,1}})
 
         local crowbarItem = Storage:GetItem("weapon_crowbar")
 
@@ -73,10 +75,39 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
         panel:MakePopup()
 
         local slotPanel = vgui.Create("DPanel", panel)
-        slotPanel:SetSize(100, 100)
+        slotPanel:SetSize(200, 200)
         slotPanel:Center()
 
         local actualSlotPanel = slot:GeneratePanel()
-        actualSlotPanel:SetParent(actualSlotPanel)
+        actualSlotPanel:SetParent(slotPanel)
+    end
+
+    if button == KEY_LBRACKET and IsFirstTimePredicted() then
+        local crowbarItem = Storage:GetItem("weapon_crowbar")
+
+        if (not crowbarItem) then
+            LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get weapon_crowbar item.")
+            return
+        end
+
+        local vi = TempThing.VisualItem.new():SetDisplayItem(crowbarItem)
+        
+        local panel = vi:GeneratePanel()
+
+        panel:SetSize(300, 300)
+        panel:Center()
+        panel:MakePopup()
+
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated visual item panel.")
     end
 end)
+
+--[[ Key Keybinds
+    J - Register weapon_crowbar item
+    N - Print weapon_crowbar info to chat
+    H - Set weapon_crowbar display name to "Cool Crowbar"
+    O - Register primary slot type (weapon, primary)
+    P - Generate primary panel slot with crowbar
+    LBRACKET - Generate visual item panel for crowbar
+
+]]

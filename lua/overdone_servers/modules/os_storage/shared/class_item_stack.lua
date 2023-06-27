@@ -1,3 +1,11 @@
+--[[
+    ItemStack Class Contents:
+        - item (Item): The item of the stack.
+        - amount (number): The amount of the item in the stack.
+//        - durability (number): The durability of the item in the stack.
+//        - maxDurability (number): The maximum durability of the item in the stack.
+]]
+
 local ItemStack = {}
 ItemStack.__index = ItemStack
 

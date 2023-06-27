@@ -58,39 +58,9 @@ end
 function Slot:GeneratePanel()
     local panel = vgui.Create("DPanel")
 
-    local slot = self
-
-    function panel:Paint(w, h)
-        self:StretchToParent(0, 0, 0, 0)
-
-        local itemStack = slot:GetItemStack()
-        local item = itemStack:GetItem()
-
-        if item then
-            local icon = item:GetDisplayIcon()
-            if icon then
-                local iconPanel = vgui.Create("DImage", self)
-                iconPanel:SetSize(w, h)
-                iconPanel:Center()
-                iconPanel:SetMaterial(Material(icon)) -- Can also use SetImage if needed
-            elseif item:GetDisplayModel() then
-                local modelPanel = vgui.Create("DModelPanel", self)
-                modelPanel:SetModel(item:GetDisplayModel())
-                modelPanel:SetSize(w, h)
-                modelPanel:SetCamPos(Vector(50, 50, 50))
-                modelPanel:SetLookAt(Vector(0, 0, 0))
-                modelPanel:SetFOV(20)
-                modelPanel:SetAmbientLight(Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_TOP, Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_FRONT, Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_RIGHT, Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_LEFT, Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_BACK, Color(255, 255, 255))
-                modelPanel:SetDirectionalLight(BOX_BOTTOM, Color(255, 255, 255))
-            else
-                draw.RoundedBox(0, 0, 0, w, h, Color(255, 0, 0, 255))
-            end
-        end
+    panel.Paint = function(panel, w, h)
+        panel:StretchToParent(5,5,5,5)
+        draw.RoundedBox(0, 0, 0, w, h, Color(255, 255, 0))
     end
 
     return panel
