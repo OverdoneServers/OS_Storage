@@ -14,6 +14,9 @@
         - GetShape(): Returns the shape of the inventory.
 
 ]]--
+local module = OverdoneServers:GetModule("os_storage")
+
+local Slot = include(module.FolderPath .. "/shared/class_slot.lua")
 
 local TableHelper = OverdoneServers:GetLibrary("table_helper")
 
@@ -122,9 +125,31 @@ end
 function Inventory:GeneratePanel()
     local invPanel = vgui.Create("DPanel")
 
-    function invPanel:Paint(w, h)
-        self:StretchToParent(0, 0, 0, 0)
+    invPanel.Paint = function(panel, w, h)
         draw.RoundedBox(0, 0, 0, w, h, Color(0, 0, 0, 255))
+    end
+
+    local slotSize = 50
+    local slotSpacing = 10
+
+    -- Create a Slot panel for each slot in the inventory
+    for i = 1, #self.shape do
+        for j = 1, #self.shape[i] do
+            if self.shape[i][j] then
+                -- If the slot exists in the shape, create a new Slot panel
+                local slot = Slot.new() -- TODO: Add slottype here
+                local slotPanel = slot:GeneratePanel()
+
+                -- Set the position of the Slot panel
+                slotPanel:SetPos((j - 1) * (slotSize + slotSpacing), (i - 1) * (slotSize + slotSpacing))
+
+                -- Set the size of the Slot panel
+                slotPanel:SetSize(slotSize, slotSize)
+
+                -- Parent the Slot panel to the inventory panel
+                slotPanel:SetParent(invPanel)
+            end
+        end
     end
 
     return invPanel

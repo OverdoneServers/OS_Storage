@@ -8,6 +8,7 @@ TempThing.Slot = TempThing.Slot or include(module.FolderPath .. "/shared/class_s
 TempThing.Item = TempThing.Item or include(module.FolderPath .. "/shared/class_item.lua")
 TempThing.ItemStack = TempThing.ItemStack or include(module.FolderPath .. "/shared/class_item_stack.lua")
 TempThing.VisualItem = TempThing.VisualItem or include(module.FolderPath .. "/client/class_visual_item.lua")
+TempThing.Inventory = TempThing.Inventory or include(module.FolderPath .. "/shared/class_inventory.lua")
 
 
 function Storage:InitInventory(sizeX, sizeY)
@@ -104,6 +105,27 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated visual item panel.")
     end
+
+    if button == KEY_TAB and IsFirstTimePredicted() then
+        local inventory = TempThing.Inventory.newShaped({
+            {1, 1, 0, 1, 1},
+            {1, 1, 0, 1, 1},
+            {1, 1, 0, 1, 1},
+            {0, 1, 1, 1, 0},
+            {0, 0, 1, 0, 0},
+        })
+
+        local panel = vgui.Create("DFrame")
+        panel:SetSize(600, 400)
+        panel:Center()
+        panel:MakePopup()
+
+        local inventoryPanel = inventory:GeneratePanel()
+        inventoryPanel:SetParent(panel)
+        inventoryPanel:StretchToParent(30, 30, 30, 30)
+
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated inventory panel.")
+    end
 end)
 
 --[[ Key Keybinds
@@ -113,5 +135,5 @@ end)
     O - Register primary slot type (weapon, primary)
     P - Generate primary panel slot with crowbar
     LBRACKET - Generate visual item panel for crowbar
-
+    TAB - Generate inventory panel
 ]]

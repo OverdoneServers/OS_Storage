@@ -52,10 +52,9 @@ end
 
 function Slot:GeneratePanel()
     local panel = vgui.Create("DPanel")
-
+    local tempCol = Color(math.random(0,255), math.random(0,255), math.random(0,255))
     panel.Paint = function(panel, w, h)
-        panel:StretchToParent(5,5,5,5)
-        draw.RoundedBox(0, 0, 0, w, h, Color(255, 255, 0))
+        draw.RoundedBox(0, 0, 0, w, h, tempCol)
     end
 
     return panel
