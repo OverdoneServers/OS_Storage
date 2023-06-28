@@ -16,7 +16,7 @@ end
 
 module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", function(ply, button)
     if button == KEY_J and IsFirstTimePredicted() then
-        if (Storage:RegisterItem(TempThing.Item.new("weapon_crowbar", 1, {{1,1}}))) then
+        if Storage:RegisterItem(TempThing.Item.new("weapon_crowbar", 1, 1, 1)) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Registered weapon_crowbar")
         else
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to register weapon_crowbar")
@@ -54,7 +54,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
             return
         end
 
-        local slot = TempThing.Slot.new(slotType, {{1,1}})
+        local slot = TempThing.Slot.new(slotType)
 
         local crowbarItem = Storage:GetItem("weapon_crowbar")
 
@@ -92,11 +92,15 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
         local vi = TempThing.VisualItem.new():SetDisplayItem(crowbarItem)
         
-        local panel = vi:GeneratePanel()
-
+        local panel = vgui.Create("DFrame")
         panel:SetSize(300, 300)
         panel:Center()
         panel:MakePopup()
+
+        local itemPanel = vi:GeneratePanel()
+        itemPanel:SetParent(panel)
+        itemPanel:SetSize(150, 150)
+        itemPanel:Center()
 
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated visual item panel.")
     end

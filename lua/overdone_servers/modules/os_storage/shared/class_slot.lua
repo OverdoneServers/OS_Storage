@@ -4,20 +4,15 @@ Slot.__index = Slot
 Slot.__tostring = function(slot)
     local itemStack = slot:GetItemStack()
     local itemStackStr = itemStack and tostring(itemStack) or "empty"
-    return string.format("Slot (Index: %s, Type: %s, ItemStack: %s)", tostring(slot:GetIndex()), tostring(slot:GetSlotType()), itemStackStr)
+    return string.format("Slot (Type: %s, ItemStack: %s)", tostring(slot:GetSlotType()), itemStackStr)
 end
 
-function Slot.new(index, slotType, itemStack)
+function Slot.new(slotType, itemStack)
     local newSlot = setmetatable({}, Slot)
-    newSlot.index = index
     newSlot.slotType = slotType
     newSlot.itemStack = itemStack
 
     return newSlot
-end
-
-function Slot:GetIndex()
-    return self.index
 end
 
 function Slot:GetSlotType()

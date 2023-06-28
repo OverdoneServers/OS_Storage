@@ -126,15 +126,19 @@ local defaultShape = {{true}}
     maxY (number): The max Y size of the item in the inventory.
 ]]
 function Item.new(ent, maxStack, sizeX, sizeY)
-    local shape = {}
-    for i = 1, sizeY do
-        shape[i] = {}
-        for j = 1, sizeX do
-            shape[i][j] = true
+    if sizeX and sizeY then
+        local shape = {}
+        for i = 1, sizeY do
+            shape[i] = {}
+            for j = 1, sizeX do
+                shape[i][j] = true
+            end
         end
-    end
 
-    return Item.newShaped(ent, maxStack, shape)
+        return Item.newShaped(ent, maxStack, shape)
+    else
+        return Item.newShaped(ent, maxStack, nil)
+    end
 end
 
 --[[

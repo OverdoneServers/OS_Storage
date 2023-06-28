@@ -104,7 +104,7 @@ function VisualItem:GenerateModelPanel()
 end
 
 function VisualItem:GeneratePanel()
-    local outPanel = vgui.Create("DFrame")
+    local outPanel = vgui.Create("DPanel")
 
     outPanel:SetMouseInputEnabled(false)
     outPanel:SetKeyboardInputEnabled(false)
