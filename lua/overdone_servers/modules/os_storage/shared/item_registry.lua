@@ -38,17 +38,3 @@ function Storage:GetIItems()
     end
     return itemsTable
 end
-
--- for all entities in the game, print their GetSkin value:
-if (CLIENT) then
-    LocalPlayer():PrintMessage(HUD_PRINTTALK, "Printing all entities with model 'models/props_junk/PopCan01a.mdl' and their skin number:")
-    for _, ent in pairs(ents.GetAll()) do
-        if ent:GetModel() then
-            LocalPlayer():PrintMessage(HUD_PRINTTALK, ent:GetModel())
-            if (ent:GetModel() == "models/props_junk/PopCan01a.mdl") then
-                // print the skin number
-                LocalPlayer():PrintMessage(HUD_PRINTTALK, ent:GetClass() .. " - " .. ent:GetSkin())
-            end
-        end
-    end
-end
