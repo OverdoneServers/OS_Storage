@@ -126,6 +126,59 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated inventory panel.")
     end
+
+    if button == KEY_8 and IsFirstTimePredicted() then
+
+        local crowbarItem = Storage:GetItem("weapon_crowbar")
+
+        if (not crowbarItem) then
+            LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get weapon_crowbar item.")
+            return
+        end
+
+        local crowbarItemStack = TempThing.ItemStack.new(crowbarItem)
+
+        local slot1 = TempThing.Slot.new(Storage:GetSlotType("primary"))
+        local slot2 = TempThing.Slot.new(Storage:GetSlotType("primary"))
+        local slot3 = TempThing.Slot.new(Storage:GetSlotType("primary"))
+        local slot4 = TempThing.Slot.new(Storage:GetSlotType())
+
+        slot1:SetItemStack(crowbarItemStack)
+
+        slot2:SetMasterSlot(slot1)
+        slot3:SetMasterSlot(slot1)
+        
+        local panel = vgui.Create("DFrame")
+        panel:SetSize(300, 300)
+        panel:Center()
+        panel:MakePopup()
+
+        local slotPanel = vgui.Create("DPanel", panel)
+        slotPanel:SetSize(200, 200)
+        slotPanel:Center()
+        
+        local actualSlotPanel = slot1:GeneratePanel()
+        actualSlotPanel:SetParent(slotPanel)
+        actualSlotPanel:SetSize(50, 50)
+
+        local actualSlotPanel2 = slot2:GeneratePanel()
+        actualSlotPanel2:SetParent(slotPanel)
+        actualSlotPanel2:SetSize(50, 50)
+        actualSlotPanel2:AlignLeft(50)
+
+        local actualSlotPanel3 = slot3:GeneratePanel()
+        actualSlotPanel3:SetParent(slotPanel)
+        actualSlotPanel3:SetSize(50, 50)
+        actualSlotPanel3:AlignTop(50)
+
+        local actualSlotPanel4 = slot4:GeneratePanel()
+        actualSlotPanel4:SetParent(slotPanel)
+        actualSlotPanel4:SetSize(50, 50)
+        actualSlotPanel4:AlignTop(50)
+        actualSlotPanel4:AlignLeft(50)
+
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Generated linked slots demo.")
+    end
 end)
 
 --[[ Key Keybinds
@@ -134,6 +187,7 @@ end)
     H - Set weapon_crowbar display name to "Cool Crowbar"
     O - Register primary slot type (weapon, primary)
     P - Generate primary panel slot with crowbar
+    8 - Generate linked slots demo
     LBRACKET - Generate visual item panel for crowbar
     TAB - Generate inventory panel
 ]]
