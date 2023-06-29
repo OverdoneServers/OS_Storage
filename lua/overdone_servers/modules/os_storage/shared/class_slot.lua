@@ -67,12 +67,15 @@ function Slot:GetMasterSlot()
 end
 
 function Slot:SetMasterSlot(slot)
+    if slot == self then return self end -- Can't set self as master slot (would cause infinite loop)
+
     if self.masterSlot then
         self.masterSlot:RemoveLinkedSlot(self)
     end
 
     self.masterSlot = slot
     self.masterSlot:AddLinkedSlot(self)
+    
     return self
 end
 
@@ -81,22 +84,26 @@ function Slot:GetLinkedSlots()
 end
 
 function Slot:AddLinkedSlot(slot)
+    if slot == self then return self end -- Can't add self as linked slot (would cause infinite loop)
+
     if self.linkedSlots == nil then
         self.linkedSlots = {}
     end
 
-    table.insert(self.linkedSlots, slot)
+    self.linkedSlots[slot] = true
+
     return self
 end
 
 function Slot:RemoveLinkedSlot(slot)
     if self.linkedSlots == nil then return self end
 
-    if table.RemoveByValue(self.linkedSlots, slot) != false then
+    if self.linkedSlots[slot] then
+        self.linkedSlots[slot] = nil
         slot.masterSlot = nil
     end
 
-    if #self.linkedSlots == 0 then
+    if next(self.linkedSlots) == nil then
         self.linkedSlots = nil
     end
 
