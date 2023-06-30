@@ -64,7 +64,14 @@ function Inventory.newShaped(shape)
     end
 
     newInventory.shape = shape
-    newInventory.itemStacks = {}
+    newInventory.slots = {}
+    for i = 1, #shape do
+        newInventory.slots[i] = {}
+        for j = 1, #shape[i] do
+            newInventory.slots[i][j] = Slot.new(nil, nil)
+        end
+    end
+    
     return newInventory
 end
 
@@ -132,23 +139,12 @@ function Inventory:GeneratePanel()
     local slotSize = 50
     local slotSpacing = 10
 
-    -- Create a Slot panel for each slot in the inventory
-    for i = 1, #self.shape do
-        for j = 1, #self.shape[i] do
-            if self.shape[i][j] then
-                -- If the slot exists in the shape, create a new Slot panel
-                local slot = Slot.new() -- TODO: Add slottype here
-                local slotPanel = slot:GeneratePanel()
-
-                -- Set the position of the Slot panel
-                slotPanel:SetPos((j - 1) * (slotSize + slotSpacing), (i - 1) * (slotSize + slotSpacing))
-
-                -- Set the size of the Slot panel
-                slotPanel:SetSize(slotSize, slotSize)
-
-                -- Parent the Slot panel to the inventory panel
-                slotPanel:SetParent(invPanel)
-            end
+    for i = 1, #self.slots do
+        for j = 1, #self.slots[i] do
+            local slotPanel = self.slots[i][j]:GeneratePanel()
+            slotPanel:SetParent(invPanel)
+            slotPanel:SetSize(slotSize, slotSize)
+            slotPanel:SetPos((i - 1) * (slotSize + slotSpacing), (j - 1) * (slotSize + slotSpacing))
         end
     end
 
