@@ -8,16 +8,13 @@ TempThing.Slot = TempThing.Slot or include(module.FolderPath .. "/shared/class_s
 TempThing.Item = TempThing.Item or include(module.FolderPath .. "/shared/class_item.lua")
 TempThing.ItemStack = TempThing.ItemStack or include(module.FolderPath .. "/shared/class_item_stack.lua")
 TempThing.VisualItem = TempThing.VisualItem or include(module.FolderPath .. "/client/class_visual_item.lua")
+TempThing.InventoryTemplate = TempThing.InventoryTemplate or include(module.FolderPath .. "/shared/class_inventory_template.lua")
 TempThing.Inventory = TempThing.Inventory or include(module.FolderPath .. "/shared/class_inventory.lua")
 
 
-function Storage:InitInventory(sizeX, sizeY)
-
-end
-
 module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", function(ply, button)
     if button == KEY_J and IsFirstTimePredicted() then
-        if Storage:RegisterItem(TempThing.Item.new("weapon_crowbar", 1, 1, 1)) then
+        if Storage.Registry:Register(Storage.Registry.Type.ITEM, TempThing.Item.new("weapon_crowbar", 1, 1, 1)) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Registered weapon_crowbar")
         else
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to register weapon_crowbar")
@@ -25,11 +22,11 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
     end
 
     if button == KEY_N and IsFirstTimePredicted() then
-        LocalPlayer():PrintMessage(HUD_PRINTTALK, tostring(Storage:GetItem("weapon_crowbar")))
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, tostring(Storage.Registry:Get(Storage.Registry.Type.ITEM, "weapon_crowbar")))
     end
 
     if button == KEY_H and IsFirstTimePredicted() then
-        local crowbarItem = Storage:GetItem("weapon_crowbar")
+        local crowbarItem = Storage.Registry:Get(Storage.Registry.Type.ITEM, "weapon_crowbar")
         if (crowbarItem) then
             crowbarItem:SetDisplayName("Cool Crowbar")
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Set " .. crowbarItem:GetID() .. "'s display name to '" .. crowbarItem:GetDisplayName() .. "'")
@@ -40,7 +37,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
     if button == KEY_O and IsFirstTimePredicted() then
         local slotType = TempThing.SlotType.new("primary", "Primary", {"weapon", "primary"})
-        if (Storage:RegisterSlotType(slotType)) then
+        if (Storage.Registry:Register(Storage.Registry.Type.SLOT_TYPE, slotType)) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Registered slot type: " .. slotType:GetDisplayName())
         else
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to register slot type: " .. slotType:GetDisplayName())
@@ -48,7 +45,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
     end
 
     if button == KEY_P and IsFirstTimePredicted() then
-        local slotType = Storage:GetSlotType("primary")
+        local slotType = Storage.Registry:Get(Storage.Registry.Type.SLOT_TYPE, "primary")
 
         if (not slotType) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get slot type: primary")
@@ -57,7 +54,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
         local slot = TempThing.Slot.new(slotType)
 
-        local crowbarItem = Storage:GetItem("weapon_crowbar")
+        local crowbarItem = Storage.Registry:Get(Storage.Registry.Type.ITEM, "weapon_crowbar")
 
         if (not crowbarItem) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get weapon_crowbar item.")
@@ -84,7 +81,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
     end
 
     if button == KEY_LBRACKET and IsFirstTimePredicted() then
-        local crowbarItem = Storage:GetItem("weapon_crowbar")
+        local crowbarItem = Storage.Registry:Get(Storage.Registry.Type.ITEM, "weapon_crowbar")
 
         if (not crowbarItem) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get weapon_crowbar item.")
@@ -129,7 +126,7 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
     if button == KEY_8 and IsFirstTimePredicted() then
 
-        local crowbarItem = Storage:GetItem("weapon_crowbar")
+        local crowbarItem = Storage.Registry:Get(Storage.Registry.Type.ITEM, "weapon_crowbar")
 
         if (not crowbarItem) then
             LocalPlayer():PrintMessage(HUD_PRINTTALK, "Failed to get weapon_crowbar item.")
@@ -138,10 +135,10 @@ module:HookAdd( "PlayerButtonUp", "OS_CharactorCreator:MenuButtonPress", functio
 
         local crowbarItemStack = TempThing.ItemStack.new(crowbarItem)
 
-        local slot1 = TempThing.Slot.new(Storage:GetSlotType("primary"))
-        local slot2 = TempThing.Slot.new(Storage:GetSlotType("primary"))
-        local slot3 = TempThing.Slot.new(Storage:GetSlotType("primary"))
-        local slot4 = TempThing.Slot.new(Storage:GetSlotType())
+        local slot1 = TempThing.Slot.new()
+        local slot2 = TempThing.Slot.new()
+        local slot3 = TempThing.Slot.new()
+        local slot4 = TempThing.Slot.new()
 
         slot1:SetItemStack(crowbarItemStack)
 

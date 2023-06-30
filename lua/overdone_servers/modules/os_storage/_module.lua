@@ -10,16 +10,13 @@ MODULE.DataToLoad = {
         "class_visual_item.lua",
     },
     Shared = {
-        "enums.lua",
         "class_item.lua",
         "class_item_stack.lua",
         "class_slot_type.lua",
         "class_slot.lua",
-        "item_registry.lua",
-        "slot_registry.lua",
         "class_inventory_template.lua",
         "class_inventory.lua",
-        "inventory_registry.lua",
+        "registry.lua",
     },
     Fonts = {
         {"TempText", "good-times-rg.ttf",
